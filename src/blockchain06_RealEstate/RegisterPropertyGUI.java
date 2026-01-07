@@ -12,13 +12,14 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
 
     // Referência para o nó da blockchain (Miner)
     RemoteNodeInterface node;
+    RealEstateUser myUser;
     /**
      * Creates new form RegisterPropertyGUI
      */
-    public RegisterPropertyGUI(RemoteNodeInterface node) {
+    public RegisterPropertyGUI(RemoteNodeInterface node, RealEstateUser user) {
         this.node = node;
+        this.myUser = user;
         initComponents();
-        // Centrar a janela
         setLocationRelativeTo(null);
     }
 
@@ -110,53 +111,48 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
        
         try {
-            // 1. Ler dados da Interface
-            String owner = txtOwnerName.getText();
-            String pass = new String(txtPass.getPassword());
-            
+            // 1. Validar conexão e sessão
+            if (node == null || myUser == null) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Erro Crítico: Sem dados de sessão ou conexão.");
+                return;
+            }
+
+            // 2. Ler APENAS os dados do Imóvel (O dono é automático)
             String address = txtAddress.getText();
             String type = txtType.getText();
-            
-            // Validar números
+
             if (txtArea.getText().isEmpty() || txtValue.getText().isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Preencha a Área e o Valor!");
                 return;
             }
-            
+
             double area = Double.parseDouble(txtArea.getText());
             double value = Double.parseDouble(txtValue.getText());
 
-            // 2. Criar objeto do imóvel (Gera ID automático)
+            // 3. Criar o Objeto Imóvel (Gera ID Hash automático)
             RealEstateProperty prop = new RealEstateProperty(address, type, area, value);
+            String assetKey = prop.getUniqueBlockchainID();
 
-            // 3. Obter o ID gerado
-            String assetKey = prop.getUniqueBlockchainID(); 
-            
-            // 4. MINTING: Criar a Transação de Génese (1000 tokens)
-            // Envia de "owner" para "owner"
+            // 4. Criar a Transação usando o objeto USER (Sem password)
+            // Lógica: O 'myUser' (Sender) envia para 'myUser.getName()' (Receiver)
             int genesisSupply = 1000;
 
             RealEstateTransaction tx = new RealEstateTransaction(
-                owner,      
-                owner,      
-                assetKey,   
-                genesisSupply, 
-                pass
+                myUser,               // OBJETO user autenticado (contém a PrivateKey para assinar)
+                myUser.getUserName(), // Nome do destinatário (ele próprio)
+                assetKey,             // ID do imóvel
+                genesisSupply         // 1000 tokens
             );
 
             // 5. Enviar para a Blockchain
-            if (node != null) {
-                node.addTransaction(utils.Utils.ObjectToBase64(tx));
-                
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                    "Imóvel Registado com Sucesso!\n\nID Gerado: " + assetKey, 
-                    "Sucesso", 
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                
-                this.dispose(); // Fecha a janela
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Erro: Sem conexão ao Miner.");
-            }
+            node.addTransaction(utils.Utils.ObjectToBase64(tx));
+
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Imóvel Registado com Sucesso!\n\nID Gerado: " + assetKey, 
+                "Sucesso", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+            this.dispose(); // Fecha a janela e volta ao Menu
 
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(this, "Erro no registo: " + ex.getMessage());
@@ -192,12 +188,7 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegisterPropertyGUI().setVisible(true);
-            }
-        });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

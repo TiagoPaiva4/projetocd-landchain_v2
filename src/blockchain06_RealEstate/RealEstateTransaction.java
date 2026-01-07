@@ -33,32 +33,31 @@ public class RealEstateTransaction implements Serializable {
      * @param pass Password do remetente para assinar a transação
      * @throws Exception Se o login falhar ou a assinatura der erro
      */
-    public RealEstateTransaction(String senderName, String receiverName, String asset, int amount, String pass) throws Exception {
-        // 1. Login e Obtenção das Identidades (Usando o novo RealEstateUser)
-        RealEstateUser uSender = RealEstateUser.login(senderName, pass);
-        RealEstateUser uReceiver = RealEstateUser.login(receiverName);
+    // Adiciona este NOVO construtor na classe blockchain06_RealEstate.RealEstateTransaction
 
-        // 2. Preenchimento dos dados
-        this.txtSender = uSender.getUserName();
-        this.sender = uSender.getPublicKey();
-        this.txtReceiver = uReceiver.getUserName();
-        this.receiver = uReceiver.getPublicKey();
-        
-        // 3. Definição do Negócio (Ativo e Quantidade)
-        this.assetName = asset;
-        this.tokenAmount = amount;
-        this.timestamp = System.currentTimeMillis();
+public RealEstateTransaction(RealEstateUser uSender, String receiverName, String asset, int amount) throws Exception {
+    // 1. O Sender já vem autenticado (uSender)
+    this.txtSender = uSender.getUserName();
+    this.sender = uSender.getPublicKey();
+    
+    // 2. O Receiver (neste caso de minting, é o próprio sender, mas mantemos genérico)
+    RealEstateUser uReceiver = RealEstateUser.login(receiverName); // Carrega chave pública do destinatário
+    this.txtReceiver = uReceiver.getUserName();
+    this.receiver = uReceiver.getPublicKey();
 
-        // 4. Criação da Assinatura Digital
-        // É crucial assinar o NOME DO ATIVO e a QUANTIDADE para impedir adulteração do negócio
-        byte[] allData = Utils.concatenate(this.sender.getEncoded(), this.receiver.getEncoded());
-        allData = Utils.concatenate(allData, Utils.longToBytes(timestamp)); // timestamp
-        allData = Utils.concatenate(allData, assetName.getBytes());         // asset
-        allData = Utils.concatenate(allData, Utils.intToBytes(tokenAmount));// amount
+    // 3. Dados do Negócio
+    this.assetName = asset;
+    this.tokenAmount = amount;
+    this.timestamp = System.currentTimeMillis();
 
-        // Assinar com a chave privada do remetente
-        this.signature = SecurityUtils.sign(allData, uSender.getPrivateKey());
-    }
+    // 4. Assinatura (Usando a chave privada que já está no objeto uSender)
+    byte[] allData = Utils.concatenate(this.sender.getEncoded(), this.receiver.getEncoded());
+    allData = Utils.concatenate(allData, Utils.longToBytes(timestamp));
+    allData = Utils.concatenate(allData, assetName.getBytes());
+    allData = Utils.concatenate(allData, Utils.intToBytes(tokenAmount));
+
+    this.signature = SecurityUtils.sign(allData, uSender.getPrivateKey());
+}
 
     /**
      * Verifica se a assinatura da transação é válida

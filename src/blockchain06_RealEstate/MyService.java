@@ -5,6 +5,7 @@
 package blockchain06_RealEstate;
 
 import blockchain05_TemplarCoin.*;
+import javax.swing.JOptionPane;
 import utils.RMI;
 
 /**
@@ -13,15 +14,28 @@ import utils.RMI;
  */
 public class MyService extends javax.swing.JFrame {
     
+    // Dados essenciais que vêm do Login
+    private RemoteNodeInterface node;
+    private RealEstateUser myUser;
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MyService.class.getName());
 
     /**
      * Creates new form MyService
      */
-    public MyService() {
-        initComponents();
+    public MyService(RemoteNodeInterface node, RealEstateUser user) {
+        this.node = node;
+        this.myUser = user;
+        
+        initComponents(); // Inicia os componentes gráficos
+        
+        // Configurações iniciais visuais
+        this.setTitle("Dashboard Imobiliário RWA");
+        this.setLocationRelativeTo(null);
+        
+        // Se criares uma label chamada lblWelcome no Design:
+        // lblWelcome.setText("Bem-vindo, " + user.getUserName() + " (NIF: " + user.getTaxID() + ")");
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,6 +49,7 @@ public class MyService extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtTransaction = new javax.swing.JTextField();
         btAddTransaction = new javax.swing.JButton();
+        btRegisterProp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,34 +76,45 @@ public class MyService extends javax.swing.JFrame {
         btAddTransaction.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btAddTransaction.addActionListener(this::btAddTransactionActionPerformed);
 
+        btRegisterProp.setText("jButton1");
+        btRegisterProp.addActionListener(this::btRegisterPropActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtNodeAddress)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btAddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))))
-            .addComponent(txtNodeAddress)
+                        .addComponent(txtTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(100, 100, 100)
+                                .addComponent(btRegisterProp)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(43, 43, 43)
+                .addComponent(btRegisterProp)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btAddTransaction)
-                    .addComponent(txtTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btAddTransaction, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtTransaction, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -112,6 +138,18 @@ public class MyService extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btAddTransactionActionPerformed
 
+    private void btRegisterPropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterPropActionPerformed
+        // TODO add your handling code here:
+        if (node == null || myUser == null) {
+            JOptionPane.showMessageDialog(this, "Erro de conexão ou sessão inválida.");
+            return;
+        }
+        
+        // Abre a janela de registo passando as credenciais
+        RegisterPropertyGUI regWin = new RegisterPropertyGUI(node, myUser);
+        regWin.setVisible(true);
+    }//GEN-LAST:event_btRegisterPropActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -133,12 +171,12 @@ public class MyService extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MyService().setVisible(true));
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddTransaction;
+    private javax.swing.JButton btRegisterProp;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField txtNodeAddress;
     private javax.swing.JTextField txtTransaction;

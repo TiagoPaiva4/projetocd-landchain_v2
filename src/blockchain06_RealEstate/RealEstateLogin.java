@@ -250,15 +250,29 @@ public class RealEstateLogin extends javax.swing.JFrame {
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
         try {
-            TemplarUser user = TemplarUser.login(txtLoginUser.getText(), new String(txtLoginPass.getPassword()));
-            RemoteNodeInterface node = (RemoteNodeInterface) RMI.getRemote(txtNodeAdress.getText());
-             TemplarCoin gui = new TemplarCoin(user, node);
-             this.setVisible(false);
-             gui.setVisible(true);
-                     
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
-            System.getLogger(RealEstateLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            String name = txtLoginUser.getText(); // Confirma o nome da variável do teu TextField
+            String pass = new String(txtLoginPass.getPassword()); // Confirma o nome da variável
+
+            // 1. Autenticar o Utilizador
+            RealEstateUser user = RealEstateUser.login(name, pass);
+            
+            // 2. Tentar ligar ao Servidor Local (Miner/NodeP2P)
+            // Assumimos que o NodeP2PGui já está a correr noutra janela ou processo
+            RemoteNodeInterface node = (RemoteNodeInterface) java.rmi.Naming.lookup("//localhost:1099/MinerService");
+
+            // 3. Sucesso! Abrir o Menu Principal (MyService)
+            MyService menu = new MyService(node, user);
+            menu.setVisible(true);
+            
+            // 4. Fechar a janela de login
+            this.dispose();
+
+        } catch (Exception e) {
+            // Se der erro (ex: password errada ou servidor desligado)
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Erro no Login: " + e.getMessage() + "\nVerifique se o Servidor (Miner) está ligado.",
+                "Erro", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btLoginActionPerformed
 

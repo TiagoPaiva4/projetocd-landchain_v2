@@ -1,2 +1,0 @@
-blockchain06_RealEstate.MinerDistibuted$MinerThr
-blockchain06_RealEstate.MinerDistibuted
