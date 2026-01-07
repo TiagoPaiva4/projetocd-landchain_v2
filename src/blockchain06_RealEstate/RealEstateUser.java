@@ -35,7 +35,7 @@ import utils.SecurityUtils;
  *
  * @author manso - computer
  */
-public class TemplarUser implements Serializable{
+public class RealEstateUser implements Serializable{
 
     public static final String FILE_PATH = "data_user/";
 
@@ -44,7 +44,7 @@ public class TemplarUser implements Serializable{
     transient private PrivateKey privateKey; // não gravar as chaves nas streams
     transient private Key aesKey; // não gravar as chaves nas streams
 
-    protected TemplarUser() {
+    protected RealEstateUser() {
         //construtor privado que so pode ser chamado na classe 
         new File(FILE_PATH).mkdirs();
     }
@@ -70,12 +70,12 @@ public class TemplarUser implements Serializable{
         return privateKey;
     }
 
-    public static TemplarUser register(String name, String password) throws Exception {
+    public static RealEstateUser register(String name, String password) throws Exception {
         //verificar se o user já esta registado
         if( new File(FILE_PATH + name + ".pub").exists())
             throw new Exception("User already exists :" + name);
         
-        TemplarUser user = new TemplarUser();
+        RealEstateUser user = new RealEstateUser();
         user.userName = name;
         //gerar as chaves
         user.aesKey = SecurityUtils.generateAESKey(256);
@@ -94,8 +94,8 @@ public class TemplarUser implements Serializable{
         return user;
     }
 
-    public static TemplarUser login(String name, String pass) throws Exception {
-        TemplarUser user = new TemplarUser();
+    public static RealEstateUser login(String name, String pass) throws Exception {
+        RealEstateUser user = new RealEstateUser();
         user.userName = name;
         //ler a chave privada
         byte[] secretPriv = Files.readAllBytes(Path.of(FILE_PATH + name + ".priv"));
@@ -113,8 +113,8 @@ public class TemplarUser implements Serializable{
         return user;
     }
 
-    public static TemplarUser login(String name) throws Exception {
-        TemplarUser user = new TemplarUser();
+    public static RealEstateUser login(String name) throws Exception {
+        RealEstateUser user = new RealEstateUser();
         user.userName = name;
         //ler a publica
         byte[] plainPub = Files.readAllBytes(Path.of(FILE_PATH + name + ".pub"));
@@ -143,8 +143,8 @@ public class TemplarUser implements Serializable{
      *
      * @return
      */
-    public static List<TemplarUser> getUserList() {
-        List<TemplarUser> lst = new ArrayList<>();
+    public static List<RealEstateUser> getUserList() {
+        List<RealEstateUser> lst = new ArrayList<>();
         //Ler os ficheiros da path dos utilizadores
         File[] files = new File(FILE_PATH).listFiles();
         if (files == null) {

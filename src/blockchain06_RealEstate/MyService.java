@@ -4,7 +4,7 @@
  */
 package blockchain06_RealEstate;
 
-import blockchain05_TemplarCoin.*;
+
 import javax.swing.JOptionPane;
 import utils.RMI;
 
@@ -14,27 +14,31 @@ import utils.RMI;
  */
 public class MyService extends javax.swing.JFrame {
     
-    // Dados essenciais que vêm do Login
+    // Variáveis para guardar a sessão
     private RemoteNodeInterface node;
     private RealEstateUser myUser;
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MyService.class.getName());
 
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(blockchain06_RealEstate.MyService.class.getName());
     /**
-     * Creates new form MyService
+     * Construtor Obrigatório para o Login funcionar
      */
     public MyService(RemoteNodeInterface node, RealEstateUser user) {
         this.node = node;
         this.myUser = user;
         
-        initComponents(); // Inicia os componentes gráficos
+        initComponents(); // Inicia o design gráfico
         
-        // Configurações iniciais visuais
-        this.setTitle("Dashboard Imobiliário RWA");
+        // Configurações extra
         this.setLocationRelativeTo(null);
-        
-        // Se criares uma label chamada lblWelcome no Design:
-        // lblWelcome.setText("Bem-vindo, " + user.getUserName() + " (NIF: " + user.getTaxID() + ")");
+        this.setTitle("Dashboard - Utilizador: " + (user != null ? user.getUserName() : "Desconhecido"));
+    }
+
+    /**
+     * Construtor vazio (necessário para o editor gráfico do NetBeans não dar erro)
+     * Não deve ser usado pelo Login
+     */
+    public MyService() {
+        initComponents();
     }
     /**
      * This method is called from within the constructor to initialize the form.

@@ -12,22 +12,22 @@ import utils.RMI;
  *
  * @author manso
  */
-public class TemplarLogin extends javax.swing.JFrame {
+public class RealEstateLogin extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TemplarLogin.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RealEstateLogin.class.getName());
 
     /**
      * Creates new form Login
      */
-    public TemplarLogin() {
+    public RealEstateLogin() {
         initComponents();
         displayUsers();
     }
 
     public void displayUsers() {
-        List<TemplarUser> lst = TemplarUser.getUserList();
+        List<RealEstateUser> lst = RealEstateUser.getUserList();
         StringBuilder txt = new StringBuilder();
-        for (TemplarUser u : lst) {
+        for (RealEstateUser u : lst) {
             txt.append(u.getUserName()).append("\n");
         }
         txtUsers.setText(txt.toString());
@@ -230,33 +230,51 @@ public class TemplarLogin extends javax.swing.JFrame {
             return;
         }
         try {
-            TemplarUser u = TemplarUser.login(txtRegisterUsername.getText());
+            RealEstateUser u = RealEstateUser.login(txtRegisterUsername.getText());
             JOptionPane.showConfirmDialog(this, "O utilizador já existe", "Regoster", JOptionPane.ERROR_MESSAGE);
             return;
         } catch (Exception ex) {
         }
         try {
-            TemplarUser.register(txtRegisterUsername.getText(), pass2);
+            RealEstateUser.register(txtRegisterUsername.getText(), pass2);
             displayUsers();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
 
-            System.getLogger(TemplarLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(RealEstateLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
 
     }//GEN-LAST:event_brRegisterActionPerformed
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
         try {
-            TemplarUser user = TemplarUser.login(txtLoginUser.getText(), new String(txtLoginPass.getPassword()));
-            RemoteNodeInterface node = (RemoteNodeInterface) RMI.getRemote(txtNodeAdress.getText());
-             TemplarCoin gui = new TemplarCoin(user, node);
-             this.setVisible(false);
-             gui.setVisible(true);
-                     
+            // 1. Alterado para RealEstateUser
+            blockchain06_RealEstate.RealEstateUser user = blockchain06_RealEstate.RealEstateUser.login(
+                    txtLoginUser.getText(), 
+                    new String(txtLoginPass.getPassword())
+            );
+
+            // 2. Obter endereço (com proteção caso a caixa de texto esteja vazia)
+            String addr = txtNodeAdress.getText();
+            if (addr.isEmpty()) {
+                addr = "//localhost:1099/MinerService";
+            }
+            
+            // 3. Ligar ao Node
+            blockchain06_RealEstate.RemoteNodeInterface node = (blockchain06_RealEstate.RemoteNodeInterface) utils.RMI.getRemote(addr);
+
+            // 4. Alterado para abrir o MyService
+            // ATENÇÃO: Confirma se o construtor do MyService é (node, user) ou (user, node). 
+            // Normalmente nestes projetos o node vem primeiro.
+            blockchain06_RealEstate.MyService gui = new blockchain06_RealEstate.MyService(node, user);
+            
+            this.setVisible(false);
+            gui.setVisible(true);
+            
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
-            System.getLogger(TemplarLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage(), "Login Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            // Logger ajustado para a classe atual
+            System.getLogger(RealEstateLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }//GEN-LAST:event_btLoginActionPerformed
 
@@ -286,7 +304,7 @@ public class TemplarLogin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new TemplarLogin().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new RealEstateLogin().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
