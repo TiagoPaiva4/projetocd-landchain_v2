@@ -41,25 +41,26 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         if (node == null) return;
         
         try {
-            // 2. Mapa para guardar os saldos (Imóvel -> Quantidade)
+            // 2. Mapa para guardar os saldos
             java.util.Map<String, Integer> wallet = new java.util.HashMap<>();
             
             // 3. Obter a Blockchain
             BlockChain bc = node.getBlockchain();
-            
-            // 4. CORREÇÃO: Usar getBlocks() em vez de getChain()
             java.util.List<Block> blockList = bc.getBlocks();
             
+            // Variável para normalizar o nome do utilizador (remover espaços extra)
+            String me = myUser.getUserName().trim();
+
             for (Block b : blockList) {
-                // Obter transações do bloco
+                // Obter transações
                 java.util.List transactions = b.getTransactions(); 
-                
+                if (transactions == null) continue;
+
                 for (Object rawObj : transactions) {
                     try {
                         Object txObj = rawObj;
 
-                        // 5. CORREÇÃO: Converter de Base64 manualmente (sem depender de utils)
-                        // Se o objeto vier como String (Base64), convertemos para Objeto Java
+                        // Conversão de Base64 se necessário
                         if (rawObj instanceof String) {
                             byte[] data = java.util.Base64.getDecoder().decode((String) rawObj);
                             try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
@@ -67,46 +68,49 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
                             }
                         }
 
-                        // 6. Verificar se é uma transação de imobiliário
                         if (txObj instanceof RealEstateTransaction) {
                             RealEstateTransaction tx = (RealEstateTransaction) txObj;
                             
                             String assetID = tx.getAssetName();
                             int amount = tx.getTokenAmount();
+                            String sender = tx.getTxtSender().trim();
+                            String receiver = tx.getTxtReceiver().trim();
                             
-                            // LÓGICA DE CONTABILIDADE:
+                            // --- LÓGICA DE CONTABILIDADE CORRIGIDA ---
                             
-                            // Se fui eu que recebi -> SOMA
-                            if (tx.getTxtReceiver().equals(myUser.getUserName())) {
+                            // 1. Se fui eu que recebi -> SOMA
+                            if (receiver.equals(me)) {
                                 int current = wallet.getOrDefault(assetID, 0);
                                 wallet.put(assetID, current + amount);
                             }
                             
-                            // Se fui eu que enviei -> SUBTRAI
-                            if (tx.getTxtSender().equals(myUser.getUserName())) {
+                            // 2. Se fui eu que enviei -> SUBTRAI
+                            // FIX: Só subtraímos se enviarmos para OUTRA pessoa.
+                            // Se sender == receiver, é um Registo (criação de dinheiro), logo não subtraímos.
+                            if (sender.equals(me) && !sender.equals(receiver)) {
                                 int current = wallet.getOrDefault(assetID, 0);
                                 wallet.put(assetID, current - amount);
                             }
                         }
                     } catch (Exception e) {
-                        // Ignorar dados que não sejam transações válidas (ex: texto simples)
+                        // Ignorar erros de parse
                     }
                 }
             }
             
-            // 7. Preencher a tabela apenas com o que tenho (saldo positivo)
+            // 4. Preencher a tabela com saldos positivos
             for (java.util.Map.Entry<String, Integer> entry : wallet.entrySet()) {
                 if (entry.getValue() > 0) {
                     model.addRow(new Object[]{
                         entry.getKey(),      // ID do Imóvel
-                        entry.getValue(),    // Quantidade de Tokens
-                        "Propriedade RWA"    // Tipo
+                        entry.getValue(),    // Quantidade
+                        "Propriedade RWA"
                     });
                 }
             }
             
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao ler dados: " + ex.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
