@@ -13,7 +13,7 @@
 //::                                                               (c)2024   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
-package blockchain05_TemplarCoin;
+package blockchain06_RealEstate;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

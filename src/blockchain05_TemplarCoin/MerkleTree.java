@@ -13,7 +13,7 @@
 //::                                                               (c)2022   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
-package blockchain05_TemplarCoin;
+package blockchain06_RealEstate;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

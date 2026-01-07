@@ -4,6 +4,7 @@
  */
 package blockchain05_TemplarCoin;
 
+import blockchain06_RealEstate.RemoteNodeInterface;
 import java.util.List;
 import javax.swing.JOptionPane;
 import utils.RMI;

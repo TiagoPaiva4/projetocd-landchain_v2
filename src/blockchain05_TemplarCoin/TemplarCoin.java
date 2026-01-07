@@ -4,6 +4,7 @@
  */
 package blockchain05_TemplarCoin;
 
+import blockchain06_RealEstate.RemoteNodeInterface;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;

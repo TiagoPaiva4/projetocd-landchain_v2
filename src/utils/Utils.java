@@ -211,6 +211,24 @@ public class Utils {
         return txt.substring(0, txt.length() - 1);
     }
 
+    /**
+     * Converts an int value into an array of 4 bytes.
+     * @param value The int value to convert.
+     * @return A byte array representing the int value.
+     */
+    public static byte[] intToBytes(int value) {
+        return ByteBuffer.allocate(4).putInt(value).array();
+    }
+
+    /**
+     * Converts an array of 4 bytes back into an int value.
+     * @param bytes The byte array to convert.
+     * @return The reconstructed int value.
+     */
+    public static int bytesToInt(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
+    }
+    
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private static final long serialVersionUID = 202510081453L;
     //:::::::::::::::::::::::::::  Copyright(c) M@nso  2025  :::::::::::::::::::

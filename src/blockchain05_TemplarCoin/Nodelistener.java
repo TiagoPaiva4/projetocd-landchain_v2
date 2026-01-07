@@ -16,7 +16,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 
-package blockchain05_TemplarCoin;
+package blockchain06_RealEstate;
 
 /**
  * Created on 27/11/2024, 19:46:43 
