@@ -14,7 +14,7 @@
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
 
-package blockchain06_RealEstate;
+package blockchain05_TemplarCoin;
 
 import java.io.File;
 import java.io.FileInputStream;

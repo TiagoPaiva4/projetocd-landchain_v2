@@ -597,6 +597,17 @@ public class SecurityUtils {
         //ler os bytes
         return zin.readAllBytes();
     }
+    
+    /**
+     * Calcula o HASH (SHA-256) de um array de bytes
+     * @param data dados a processar
+     * @return hash dos dados
+     * @throws Exception se o algoritmo não existir
+     */
+    public static byte[] getHash(byte[] data) throws Exception {
+        java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+        return digest.digest(data);
+    }
 
     /**
      * Extensão utilizada para armazenar chaves privadas em ficheiros

@@ -13,8 +13,9 @@
 //::                                                               (c)2024   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
-package blockchain05_TemplarCoin;
+package blockchain06_RealEstate;
 
+import blockchain05_TemplarCoin.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;

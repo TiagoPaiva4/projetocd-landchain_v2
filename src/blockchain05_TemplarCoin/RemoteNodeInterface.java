@@ -14,7 +14,7 @@
 //::                                                               (c)2024   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
-package blockchain06_RealEstate;
+package blockchain05_TemplarCoin;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

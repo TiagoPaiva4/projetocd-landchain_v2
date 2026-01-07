@@ -4,8 +4,6 @@
  */
 package blockchain06_RealEstate;
 
-import blockchain05_TemplarCoin.*;
-import blockchain06_RealEstate.RemoteNodeInterface;
 import java.util.List;
 import javax.swing.JOptionPane;
 import utils.RMI;
@@ -14,14 +12,14 @@ import utils.RMI;
  *
  * @author manso
  */
-public class RealEstateLogin extends javax.swing.JFrame {
+public class TemplarLogin extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RealEstateLogin.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TemplarLogin.class.getName());
 
     /**
      * Creates new form Login
      */
-    public RealEstateLogin() {
+    public TemplarLogin() {
         initComponents();
         displayUsers();
     }
@@ -243,36 +241,22 @@ public class RealEstateLogin extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
 
-            System.getLogger(RealEstateLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(TemplarLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
 
     }//GEN-LAST:event_brRegisterActionPerformed
 
     private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
         try {
-            String name = txtLoginUser.getText(); // Confirma o nome da variável do teu TextField
-            String pass = new String(txtLoginPass.getPassword()); // Confirma o nome da variável
-
-            // 1. Autenticar o Utilizador
-            RealEstateUser user = RealEstateUser.login(name, pass);
-            
-            // 2. Tentar ligar ao Servidor Local (Miner/NodeP2P)
-            // Assumimos que o NodeP2PGui já está a correr noutra janela ou processo
-            RemoteNodeInterface node = (RemoteNodeInterface) java.rmi.Naming.lookup("//localhost:1099/MinerService");
-
-            // 3. Sucesso! Abrir o Menu Principal (MyService)
-            MyService menu = new MyService(node, user);
-            menu.setVisible(true);
-            
-            // 4. Fechar a janela de login
-            this.dispose();
-
-        } catch (Exception e) {
-            // Se der erro (ex: password errada ou servidor desligado)
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Erro no Login: " + e.getMessage() + "\nVerifique se o Servidor (Miner) está ligado.",
-                "Erro", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            TemplarUser user = TemplarUser.login(txtLoginUser.getText(), new String(txtLoginPass.getPassword()));
+            RemoteNodeInterface node = (RemoteNodeInterface) RMI.getRemote(txtNodeAdress.getText());
+             TemplarCoin gui = new TemplarCoin(user, node);
+             this.setVisible(false);
+             gui.setVisible(true);
+                     
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Login", JOptionPane.ERROR_MESSAGE);
+            System.getLogger(TemplarLogin.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }//GEN-LAST:event_btLoginActionPerformed
 
@@ -302,7 +286,7 @@ public class RealEstateLogin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new RealEstateLogin().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new TemplarLogin().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

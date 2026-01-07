@@ -13,7 +13,7 @@
 //::                                                               (c)2015   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
  //////////////////////////////////////////////////////////////////////////////
-package blockchain06_RealEstate;
+package blockchain05_TemplarCoin;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
