@@ -3,19 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain04_blockchain/Block.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/TemplarCoin.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/TemplarTransaction.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/TemplarLogin.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/RemoteNodeObject.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/RemoteNodeInterface.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/BlockChain.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/utils/Utils.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain05_TemplarCoin/NodeP2PGui.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain04_blockchain/BlockChain.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain04_blockchain/RemoteNodeInterface.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain04_blockchain/RemoteNodeObject.java</file>
-            <file>file:/C:/Users/manso/OneDrive%20-%20Instituto%20Politécnico%20de%20Tomar/2025_2026/LEI_CD/Templar_Coin_2025/src/blockchain04_blockchain/NodeP2PGui.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/RealEstateLogin.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/RealEstateTransaction.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain05_TemplarCoin/TemplarTransaction.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/BlockChain.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/RealEstateProperty.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/utils/Utils.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/RemoteNodeObject.java</file>
+            <file>file:/C:/Users/Tiago%20Paiva/projetocd-landchain_v2/src/blockchain06_RealEstate/RealEstateUser.java</file>
         </group>
     </open-files>
 </project-private>
