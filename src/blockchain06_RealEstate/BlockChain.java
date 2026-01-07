@@ -225,6 +225,8 @@ public class BlockChain implements Serializable {
         return allTransactions;
     }
 
+    
+    
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private static final long serialVersionUID = 202510081528L;

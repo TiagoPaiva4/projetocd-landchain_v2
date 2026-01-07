@@ -19,8 +19,15 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
     public RegisterPropertyGUI(RemoteNodeInterface node, RealEstateUser user) {
         this.node = node;
         this.myUser = user;
-        initComponents();
-        setLocationRelativeTo(null);
+        
+        initComponents(); // Método obrigatório do NetBeans
+        
+        // As minhas configurações
+        setLocationRelativeTo(null); // Centrar janela
+        
+        if (myUser != null) {
+            lblUser.setText("Registante: " + myUser.getUserName());
+        }
     }
 
     /**
@@ -34,58 +41,111 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         txtAddress = new javax.swing.JTextField();
-        txtType = new javax.swing.JTextField();
         txtArea = new javax.swing.JTextField();
         txtValue = new javax.swing.JTextField();
+        txtType = new javax.swing.JTextField();
         btRegister = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         txtAddress.setText("jTextField1");
-
-        txtType.setText("jTextField2");
+        txtAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAddressActionPerformed(evt);
+            }
+        });
 
         txtArea.setText("jTextField3");
+        txtArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAreaActionPerformed(evt);
+            }
+        });
 
         txtValue.setText("jTextField4");
 
-        btRegister.setText("jButton1");
+        txtType.setText("jTextField2");
+
+        btRegister.setText("Registar Imóvel");
         btRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btRegisterActionPerformed(evt);
             }
         });
 
+        jLabel1.setText("Morada");
+
+        jLabel2.setText("Tipo de imóvel: ");
+
+        jLabel3.setText("Área (m2)");
+
+        jLabel4.setText("Preço");
+
+        lblUser.setText("Utilizador : ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(144, 144, 144)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btRegister)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(603, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(91, 91, 91)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addComponent(btRegister))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(117, 117, 117)
+                        .addComponent(lblUser)))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55)
+                .addGap(28, 28, 28)
+                .addComponent(lblUser)
+                .addGap(45, 45, 45)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addComponent(btRegister)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addGap(61, 61, 61))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -111,62 +171,71 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
        
         try {
-            // 1. Validar conexão e sessão
-            if (node == null || myUser == null) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Erro Crítico: Sem dados de sessão ou conexão.");
+            // 1. Validar se os campos estão preenchidos
+            if (txtAddress.getText().isEmpty() || txtType.getText().isEmpty() || 
+                txtArea.getText().isEmpty() || txtValue.getText().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
                 return;
             }
 
-            // 2. Ler APENAS os dados do Imóvel (O dono é automático)
+            // 2. Ler e converter números
+            double size = Double.parseDouble(txtArea.getText());
+            double value = Double.parseDouble(txtValue.getText());
             String address = txtAddress.getText();
             String type = txtType.getText();
 
-            if (txtArea.getText().isEmpty() || txtValue.getText().isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Preencha a Área e o Valor!");
-                return;
-            }
+            // 3. Criar o Imóvel (A classe gera o ID sozinha)
+            RealEstateProperty prop = new RealEstateProperty(address, type, size, value);
+            String assetID = prop.getUniqueBlockchainID();
 
-            double area = Double.parseDouble(txtArea.getText());
-            double value = Double.parseDouble(txtValue.getText());
-
-            // 3. Criar o Objeto Imóvel (Gera ID Hash automático)
-            RealEstateProperty prop = new RealEstateProperty(address, type, area, value);
-            String assetKey = prop.getUniqueBlockchainID();
-
-            // 4. Criar a Transação usando o objeto USER (Sem password)
-            // Lógica: O 'myUser' (Sender) envia para 'myUser.getName()' (Receiver)
-            int genesisSupply = 1000;
-
+            // 4. Criar a Transação de Registo (1000 tokens para o próprio dono)
             RealEstateTransaction tx = new RealEstateTransaction(
-                myUser,               // OBJETO user autenticado (contém a PrivateKey para assinar)
-                myUser.getUserName(), // Nome do destinatário (ele próprio)
-                assetKey,             // ID do imóvel
-                genesisSupply         // 1000 tokens
+                myUser,                 // Quem envia (eu)
+                myUser.getUserName(),   // Quem recebe (eu - minting)
+                assetID,                // ID do imóvel
+                1000                    // Quantidade inicial
             );
 
             // 5. Enviar para a Blockchain
-            node.addTransaction(utils.Utils.ObjectToBase64(tx));
+            if (node != null) {
+                node.addTransaction(utils.Utils.ObjectToBase64(tx));
+                
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Imóvel Registado!\nID: " + assetID);
+                
+                this.dispose(); // Fecha a janela
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Erro: Sem conexão.");
+            }
 
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Imóvel Registado com Sucesso!\n\nID Gerado: " + assetKey, 
-                "Sucesso", 
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-
-            this.dispose(); // Fecha a janela e volta ao Menu
-
-        } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Erro no registo: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Área e Valor têm de ser números (use ponto '.' para decimais).");
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+            e.printStackTrace();
         }
     
     }//GEN-LAST:event_btRegisterActionPerformed
+
+    private void txtAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAddressActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAddressActionPerformed
+
+    private void txtAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAreaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAreaActionPerformed
 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btRegister;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lblUser;
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtArea;
     private javax.swing.JTextField txtType;

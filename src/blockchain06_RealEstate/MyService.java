@@ -31,6 +31,10 @@ public class MyService extends javax.swing.JFrame {
         // Configurações extra
         this.setLocationRelativeTo(null);
         this.setTitle("Dashboard - Utilizador: " + (user != null ? user.getUserName() : "Desconhecido"));
+        
+        if (user != null) {
+            lblWelcome.setText("Bem vindo, " + user.getUserName());
+        }
     }
 
     /**
@@ -50,10 +54,12 @@ public class MyService extends javax.swing.JFrame {
     private void initComponents() {
 
         txtNodeAddress = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblWelcome = new javax.swing.JLabel();
         txtTransaction = new javax.swing.JTextField();
         btAddTransaction = new javax.swing.JButton();
         btRegisterProp = new javax.swing.JButton();
+        btViewMyAssets = new javax.swing.JButton();
+        btTenantArea = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,8 +73,8 @@ public class MyService extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel2.setText("My BlocBhain Service");
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblWelcome.setText("Bem vindo, @user ");
 
         txtTransaction.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         txtTransaction.setText("Transaction 1");
@@ -80,8 +86,16 @@ public class MyService extends javax.swing.JFrame {
         btAddTransaction.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btAddTransaction.addActionListener(this::btAddTransactionActionPerformed);
 
-        btRegisterProp.setText("jButton1");
+        btRegisterProp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-register.png"))); // NOI18N
+        btRegisterProp.setText("Registar propriedade");
         btRegisterProp.addActionListener(this::btRegisterPropActionPerformed);
+
+        btViewMyAssets.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-house.png"))); // NOI18N
+        btViewMyAssets.setText("Ver Minhas Propriedades");
+        btViewMyAssets.addActionListener(this::btViewMyAssetsActionPerformed);
+
+        btTenantArea.setText("Área de Inquilino");
+        btTenantArea.addActionListener(this::btTenantAreaActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,15 +107,15 @@ public class MyService extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btAddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
+                        .addComponent(txtTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(100, 100, 100)
-                                .addComponent(btRegisterProp)))
+                            .addComponent(lblWelcome)
+                            .addComponent(btTenantArea)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(btRegisterProp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btViewMyAssets, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -109,10 +123,14 @@ public class MyService extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addGap(43, 43, 43)
+                .addComponent(lblWelcome)
+                .addGap(27, 27, 27)
                 .addComponent(btRegisterProp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btViewMyAssets)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btTenantArea)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,6 +172,22 @@ public class MyService extends javax.swing.JFrame {
         regWin.setVisible(true);
     }//GEN-LAST:event_btRegisterPropActionPerformed
 
+    private void btTenantAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTenantAreaActionPerformed
+        // TODO add your handling code here:
+        if (node != null) {
+            new TenantContractsGUI(node, myUser).setVisible(true);
+        }
+    }//GEN-LAST:event_btTenantAreaActionPerformed
+
+    private void btViewMyAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btViewMyAssetsActionPerformed
+        // TODO add your handling code here:
+        if (node != null && myUser != null) {
+            new MyPropertiesGUI(node, myUser).setVisible(true);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Sessão inválida.");
+        }
+    }//GEN-LAST:event_btViewMyAssetsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -181,7 +215,9 @@ public class MyService extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddTransaction;
     private javax.swing.JButton btRegisterProp;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton btTenantArea;
+    private javax.swing.JButton btViewMyAssets;
+    private javax.swing.JLabel lblWelcome;
     private javax.swing.JTextField txtNodeAddress;
     private javax.swing.JTextField txtTransaction;
     // End of variables declaration//GEN-END:variables
