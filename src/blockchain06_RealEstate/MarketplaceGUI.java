@@ -226,22 +226,12 @@ public class MarketplaceGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btAcceptActionPerformed
 
     private void btCreateProposalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCreateProposalActionPerformed
-        // TODO add your handling code here:
-        // Podes abrir uma janela pequena aqui para preencher os dados
-        // ID Imovel, Preço, Tipo (Venda/Compra), Destinatario
-        String id = JOptionPane.showInputDialog("ID do Imóvel:");
-        String type = JOptionPane.showInputDialog("Tipo (VENDA ou COMPRA):");
-        String priceStr = JOptionPane.showInputDialog("Preço (€):");
-        String target = JOptionPane.showInputDialog("Destinatário (deixe vazio para MERCADO):");
-        
-        try {
-            double price = Double.parseDouble(priceStr);
-            SaleProposal proposal = new SaleProposal(myUser, id, target, price, type.toUpperCase());
-            node.addTransaction(Utils.ObjectToBase64(proposal));
-            JOptionPane.showMessageDialog(this, "Proposta enviada!");
-            loadMarket();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro nos dados.");
+        // Abre a nova janela unificada de criação de propostas
+        if (node != null) {
+            new CreateProposalGUI(node, myUser).setVisible(true);
+            // Podes fechar o mercado e obrigar a reabrir para atualizar, 
+            // ou adicionar um listener para atualizar a tabela quando a outra fechar.
+            // Para simplificar, deixamos esta janela aberta.
         }
     }//GEN-LAST:event_btCreateProposalActionPerformed
 
