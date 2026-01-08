@@ -60,6 +60,7 @@ public class MyService extends javax.swing.JFrame {
         btRegisterProp = new javax.swing.JButton();
         btViewMyAssets = new javax.swing.JButton();
         btTenantArea = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,8 +95,12 @@ public class MyService extends javax.swing.JFrame {
         btViewMyAssets.setText("Ver Minhas Propriedades");
         btViewMyAssets.addActionListener(this::btViewMyAssetsActionPerformed);
 
+        btTenantArea.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-rental.png"))); // NOI18N
         btTenantArea.setText("Área de Inquilino");
         btTenantArea.addActionListener(this::btTenantAreaActionPerformed);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-transfer.png"))); // NOI18N
+        jButton1.setText("Transferência da Propriedade");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,8 +117,9 @@ public class MyService extends javax.swing.JFrame {
                         .addGap(81, 81, 81)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblWelcome)
-                            .addComponent(btTenantArea)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btTenantArea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btRegisterProp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btViewMyAssets, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -124,13 +130,15 @@ public class MyService extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblWelcome)
-                .addGap(27, 27, 27)
+                .addGap(33, 33, 33)
                 .addComponent(btRegisterProp)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btViewMyAssets)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btTenantArea)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
                 .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -217,6 +225,7 @@ public class MyService extends javax.swing.JFrame {
     private javax.swing.JButton btRegisterProp;
     private javax.swing.JButton btTenantArea;
     private javax.swing.JButton btViewMyAssets;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JTextField txtNodeAddress;
     private javax.swing.JTextField txtTransaction;

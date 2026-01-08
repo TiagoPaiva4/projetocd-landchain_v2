@@ -35,32 +35,36 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
     }
    
    private void loadWallet() {
-        // 1. Limpar a tabela
+        // 1. Limpar a tabela antes de carregar
         model.setRowCount(0);
         
         if (node == null) return;
-        
+
         try {
-            // 2. Mapa para guardar os saldos
+            // --- ESTRUTURAS DE DADOS ---
+            // Mapa para o Saldo: ID -> Quantidade
             java.util.Map<String, Integer> wallet = new java.util.HashMap<>();
-            
-            // 3. Obter a Blockchain
-            BlockChain bc = node.getBlockchain();
-            java.util.List<Block> blockList = bc.getBlocks();
-            
-            // Variável para normalizar o nome do utilizador (remover espaços extra)
+            // Mapas para Detalhes: ID -> Texto
+            java.util.Map<String, String> typeMap = new java.util.HashMap<>();
+            java.util.Map<String, String> addressMap = new java.util.HashMap<>();
+            // Mapas para Contratos
+            java.util.Map<String, RentalTransaction> myContracts = new java.util.HashMap<>(); // ContractID -> Transação
+            java.util.Set<String> acceptedContracts = new java.util.HashSet<>(); // IDs de contratos aceites
+
+            // Obter blocos e nome do utilizador limpo
+            java.util.List<Block> blocks = node.getBlockchain().getBlocks();
             String me = myUser.getUserName().trim();
 
-            for (Block b : blockList) {
-                // Obter transações
-                java.util.List transactions = b.getTransactions(); 
+            // 2. VARRER A BLOCKCHAIN
+            for (Block b : blocks) {
+                java.util.List transactions = b.getTransactions();
                 if (transactions == null) continue;
 
                 for (Object rawObj : transactions) {
                     try {
                         Object txObj = rawObj;
-
-                        // Conversão de Base64 se necessário
+                        
+                        // Deserializar manualmente (Segurança contra falta de Utils)
                         if (rawObj instanceof String) {
                             byte[] data = java.util.Base64.getDecoder().decode((String) rawObj);
                             try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
@@ -68,50 +72,147 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
                             }
                         }
 
+                        // === A. PROCESSAR IMÓVEIS (TOKENS) ===
                         if (txObj instanceof RealEstateTransaction) {
                             RealEstateTransaction tx = (RealEstateTransaction) txObj;
                             
-                            String assetID = tx.getAssetName();
+                            // 1. Ler o nome completo (Ex: "RWA-123:T3:Porto")
+                            String rawName = tx.getAssetName();
+                            String[] parts = rawName.split(":");
+                            
+                            // 2. Separar as partes
+                            String realID = parts[0]; // O ID é sempre o primeiro
+                            String type = (parts.length > 1) ? parts[1] : "N/A"; // Se não existir, mete N/A
+                            String addr = (parts.length > 2) ? parts[2] : "N/A";
+                            
+                            // 3. Guardar detalhes nos mapas (sobrepõe antigos, fica o mais recente)
+                            typeMap.put(realID, type);
+                            addressMap.put(realID, addr);
+
+                            // 4. Calcular Saldos
                             int amount = tx.getTokenAmount();
-                            String sender = tx.getTxtSender().trim();
-                            String receiver = tx.getTxtReceiver().trim();
                             
-                            // --- LÓGICA DE CONTABILIDADE CORRIGIDA ---
-                            
-                            // 1. Se fui eu que recebi -> SOMA
-                            if (receiver.equals(me)) {
-                                int current = wallet.getOrDefault(assetID, 0);
-                                wallet.put(assetID, current + amount);
+                            // Se recebi -> SOMA
+                            if (tx.getTxtReceiver().trim().equals(me)) {
+                                wallet.put(realID, wallet.getOrDefault(realID, 0) + amount);
                             }
                             
-                            // 2. Se fui eu que enviei -> SUBTRAI
-                            // FIX: Só subtraímos se enviarmos para OUTRA pessoa.
-                            // Se sender == receiver, é um Registo (criação de dinheiro), logo não subtraímos.
-                            if (sender.equals(me) && !sender.equals(receiver)) {
-                                int current = wallet.getOrDefault(assetID, 0);
-                                wallet.put(assetID, current - amount);
+                            // Se enviei -> SUBTRAI (Exceto se for para mim mesmo/Minting)
+                            if (tx.getTxtSender().trim().equals(me) && !tx.getTxtSender().equals(tx.getTxtReceiver())) {
+                                wallet.put(realID, wallet.getOrDefault(realID, 0) - amount);
                             }
                         }
+
+                        // === B. PROCESSAR CONTRATOS (ESTADOS) ===
+                        if (txObj instanceof RentalTransaction) {
+                            RentalTransaction rtx = (RentalTransaction) txObj;
+                            // Se eu sou o dono, guardo este contrato
+                            if (rtx.getOwnerName().trim().equals(me)) {
+                                myContracts.put(rtx.getContractID(), rtx);
+                            }
+                        }
+                        
+                        if (txObj instanceof RentalAcceptanceTransaction) {
+                            RentalAcceptanceTransaction acc = (RentalAcceptanceTransaction) txObj;
+                            // Guardo o ID do contrato que foi aceite
+                            acceptedContracts.add(acc.getContractID());
+                        }
+
                     } catch (Exception e) {
-                        // Ignorar erros de parse
+                        // Ignorar erros de leitura em transações individuais
                     }
                 }
             }
+
+            // 3. CALCULAR ESTADO FINAL DOS CONTRATOS
+            // Mapa final: PropertyID -> Estado Texto
+            java.util.Map<String, String> propertyStatus = new java.util.HashMap<>();
             
-            // 4. Preencher a tabela com saldos positivos
+            for (RentalTransaction rtx : myContracts.values()) {
+                if (acceptedContracts.contains(rtx.getContractID())) {
+                    propertyStatus.put(rtx.getPropertyID(), "Arrendado (" + rtx.getTenantName() + ")");
+                } else {
+                    // Só marca como pendente se ainda não estiver marcado como arrendado por outro contrato mais recente
+                    propertyStatus.putIfAbsent(rtx.getPropertyID(), "Pendente");
+                }
+            }
+
+            // 4. PREENCHER A TABELA
             for (java.util.Map.Entry<String, Integer> entry : wallet.entrySet()) {
+                // Só mostramos se tivermos tokens (saldo positivo)
                 if (entry.getValue() > 0) {
+                    String id = entry.getKey();
+                    
                     model.addRow(new Object[]{
-                        entry.getKey(),      // ID do Imóvel
-                        entry.getValue(),    // Quantidade
-                        "Propriedade RWA"
+                        id,                                         // Coluna 0: ID
+                        typeMap.getOrDefault(id, "Antigo"),         // Coluna 1: Tipo
+                        addressMap.getOrDefault(id, "Desconhecida"),// Coluna 2: Morada
+                        entry.getValue(),                           // Coluna 3: Tokens
+                        propertyStatus.getOrDefault(id, "Livre")    // Coluna 4: Estado
                     });
                 }
             }
-            
+
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao carregar carteira: " + ex.getMessage());
             ex.printStackTrace();
+        }
+    }
+   
+   private void viewContractDetails(String assetID) {
+        try {
+            // Vamos procurar o contrato mais recente para este imóvel
+            BlockChain bc = node.getBlockchain();
+            RentalTransaction foundContract = null;
+            String status = "Pendente";
+            
+            for (Block b : bc.getBlocks()) {
+                 java.util.List transactions = b.getTransactions();
+                 if (transactions == null) continue;
+                 
+                 for (Object raw : transactions) {
+                     try {
+                        Object obj = raw;
+                        if (raw instanceof String) {
+                            byte[] data = java.util.Base64.getDecoder().decode((String) raw);
+                            try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
+                                obj = ois.readObject();
+                            }
+                        }
+                        
+                        if (obj instanceof RentalTransaction) {
+                            RentalTransaction tx = (RentalTransaction) obj;
+                            if (tx.getPropertyID().equals(assetID)) {
+                                foundContract = tx;
+                            }
+                        }
+                        
+                        // Verificar se está assinado
+                        if (obj instanceof RentalAcceptanceTransaction && foundContract != null) {
+                            RentalAcceptanceTransaction acc = (RentalAcceptanceTransaction) obj;
+                            if (acc.getContractID().equals(foundContract.getContractID())) {
+                                status = "ATIVO (Assinado)";
+                            }
+                        }
+                     } catch(Exception e) {}
+                 }
+            }
+            
+            if (foundContract != null) {
+                String info = "--- DETALHES DO CONTRATO ---\n\n" +
+                              "ID Contrato: " + foundContract.getContractID() + "\n" +
+                              "Imóvel: " + foundContract.getPropertyID() + "\n" +
+                              "Senhorio: " + foundContract.getOwnerName() + "\n" +
+                              "Inquilino: " + foundContract.getTenantName() + "\n" +
+                              "Renda: " + foundContract.getRentValue() + " €\n" +
+                              "Duração: " + foundContract.getDurationMonths() + " meses\n\n" +
+                              "ESTADO ATUAL: " + status;
+                
+                javax.swing.JOptionPane.showMessageDialog(this, info, "Contrato de Arrendamento", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     /**
@@ -135,20 +236,20 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
 
         tblProperties.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID do Imóvel", "Tokens Possuídos", "Tipo"
+                "ID do Imóvel", "Tipo", "Morada", "Tokens", "Estado (Clique para Ver)"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, true, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -157,6 +258,11 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblProperties.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPropertiesMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tblProperties);
@@ -192,7 +298,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Contrato de Renda");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -204,7 +310,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(153, Short.MAX_VALUE)
+                .addContainerGap(99, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(18, 18, 18)
                 .addComponent(btRefresh)
@@ -253,6 +359,22 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         // Passamos o 'node', o 'user' logado e o ID da casa selecionada
         new CreateRentalGUI(node, myUser, selectedAssetID).setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void tblPropertiesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPropertiesMouseClicked
+        int row = tblProperties.getSelectedRow();
+        int col = tblProperties.getSelectedColumn();
+        
+        // Se clicar na coluna 2 (Estado) e o estado não for "Livre"
+        if (row != -1 && col == 2) {
+            String status = (String) tblProperties.getValueAt(row, 2);
+            String assetID = (String) tblProperties.getValueAt(row, 0);
+            
+            if (!status.equals("Livre")) {
+                // Abrir janela de detalhes
+                viewContractDetails(assetID);
+            }
+        }
+    }//GEN-LAST:event_tblPropertiesMouseClicked
 
     /**
      * @param args the command line arguments

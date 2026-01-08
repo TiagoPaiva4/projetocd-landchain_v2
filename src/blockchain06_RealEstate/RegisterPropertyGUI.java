@@ -72,6 +72,11 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
         txtValue.setText("120000");
 
         txtType.setText("T3");
+        txtType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTypeActionPerformed(evt);
+            }
+        });
 
         btRegister.setText("Registar Imóvel");
         btRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -198,24 +203,27 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
             String address = txtAddress.getText();
             String type = txtType.getText();
 
-            // 3. Criar o Imóvel (A classe gera o ID sozinha)
+            // 3. Criar o Imóvel
             RealEstateProperty prop = new RealEstateProperty(address, type, size, value);
-            String assetID = prop.getUniqueBlockchainID();
-
-            // 4. Criar a Transação de Registo (1000 tokens para o próprio dono)
+            
+            // --- ALTERAÇÃO AQUI ---
+            // Vamos criar uma string composta: "ID:Tipo:Morada"
+            // Assim a informação fica toda guardada na blockchain
+            String fullDescription = prop.getUniqueBlockchainID() + ":" + type + ":" + address;
+            
+            // 4. Criar a Transação usando a descrição completa em vez de só o ID
             RealEstateTransaction tx = new RealEstateTransaction(
-                myUser,                 // Quem envia (eu)
-                myUser.getUserName(),   // Quem recebe (eu - minting)
-                assetID,                // ID do imóvel
-                1000                    // Quantidade inicial
+                myUser,                 
+                myUser.getUserName(),   
+                fullDescription,        // Enviamos "RWA-123:T3:Lisboa"
+                1000                    
             );
-
             // 5. Enviar para a Blockchain
             if (node != null) {
                 node.addTransaction(utils.Utils.ObjectToBase64(tx));
                 
                 javax.swing.JOptionPane.showMessageDialog(this, 
-                    "Imóvel Registado!\nID: " + assetID);
+                    "Imóvel Registado!\nID: " + fullDescription);
                 
                 this.dispose(); // Fecha a janela
             } else {
@@ -243,6 +251,10 @@ public class RegisterPropertyGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btCloseActionPerformed
+
+    private void txtTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTypeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTypeActionPerformed
 
     
 

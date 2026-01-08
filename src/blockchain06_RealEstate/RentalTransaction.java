@@ -50,6 +50,10 @@ public class RentalTransaction implements Serializable {
     public String getPropertyID() { return propertyID; }
     public double getRentValue() { return rentValue; }
 
+    public int getDurationMonths() {
+        return durationMonths;
+    }
+
     @Override
     public String toString() {
         return "[OFERTA] Contrato " + contractID + ": " + ownerName + " propõe alugar a " + tenantName;
