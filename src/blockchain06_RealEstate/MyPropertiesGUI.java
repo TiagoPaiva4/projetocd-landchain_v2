@@ -4,6 +4,12 @@
  */
 package blockchain06_RealEstate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  *
  * @author Tiago Paiva
@@ -39,104 +45,98 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         if (node == null) return;
 
         try {
-            // Mapas de dados
-            java.util.Map<String, Integer> wallet = new java.util.HashMap<>();
-            java.util.Map<String, String> typeMap = new java.util.HashMap<>();
-            java.util.Map<String, String> addressMap = new java.util.HashMap<>();
-            java.util.Map<String, String> statusMap = new java.util.HashMap<>();
-
-            // Listas para gestão de vendas
-            java.util.Set<String> soldProperties = new java.util.HashSet<>(); // Aceitações de venda
-
+            Map<String, Integer> wallet = new HashMap<>();
+            Map<String, String> typeMap = new HashMap<>();
+            Map<String, String> addressMap = new HashMap<>();
+            Map<String, SaleProposal> allProposals = new HashMap<>(); // Guardar propostas por ID
+            
             BlockChain bc = node.getBlockchain();
             String me = myUser.getUserName().trim();
 
-            // 1. VARRER A BLOCKCHAIN
+            // PASSO 1: Ler todas as transações para memória
+            // Precisamos de ler primeiro as propostas para depois usar nas aceitações
+            List<Object> allTransactions = new ArrayList<>();
+            
             for (Block b : bc.getBlocks()) {
-                java.util.List transactions = b.getTransactions();
-                if (transactions == null) continue;
-
-                for (Object rawObj : transactions) {
-                    try {
-                        Object txObj = rawObj;
-                        if (rawObj instanceof String) {
-                            byte[] data = java.util.Base64.getDecoder().decode((String) rawObj);
-                            try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
-                                txObj = ois.readObject();
+                if (b.getTransactions() != null) {
+                    for (Object raw : b.getTransactions()) {
+                        try {
+                            Object obj = raw;
+                            if (raw instanceof String) {
+                                byte[] data = java.util.Base64.getDecoder().decode((String) raw);
+                                try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
+                                    obj = ois.readObject();
+                                }
                             }
-                        }
-
-                        // --- A. REGISTO INICIAL E TRANSFERÊNCIAS DIRETAS ---
-                        if (txObj instanceof RealEstateTransaction) {
-                            RealEstateTransaction tx = (RealEstateTransaction) txObj;
-                            String rawName = tx.getAssetName();
-                            String[] parts = rawName.split(":");
-                            String realID = parts[0]; 
+                            allTransactions.add(obj);
                             
-                            // Guardar metadados
-                            typeMap.put(realID, parts.length > 1 ? parts[1] : "N/A");
-                            addressMap.put(realID, parts.length > 2 ? parts[2] : "N/A");
-
-                            int amount = tx.getTokenAmount();
-                            
-                            // Lógica base de saldo
-                            if (tx.getTxtReceiver().trim().equals(me)) {
-                                wallet.put(realID, wallet.getOrDefault(realID, 0) + amount);
+                            // Se for proposta, guarda no mapa para referência futura
+                            if (obj instanceof SaleProposal) {
+                                SaleProposal p = (SaleProposal) obj;
+                                allProposals.put(p.getProposalID(), p);
                             }
-                            if (tx.getTxtSender().trim().equals(me) && !tx.getTxtSender().equals(tx.getTxtReceiver())) {
-                                wallet.put(realID, wallet.getOrDefault(realID, 0) - amount);
-                            }
-                        }
-
-                        // --- B. TRANSFERÊNCIAS POR MERCADO (PROPOSTA/ACEITAÇÃO) ---
-                        if (txObj instanceof SaleAcceptance) {
-                            SaleAcceptance sale = (SaleAcceptance) txObj;
-                            String assetID = sale.getPropertyID();
-                            // Assumimos transferência total (1000 tokens ou o que for convencionado)
-                            // Para simplificar, vamos assumir que transfere TUDO o que o vendedor tem
-                            // Num sistema real, SaleProposal deveria ter a quantidade de tokens.
-                            int transferAmount = 1000; 
-
-                            if (sale.getBuyer().trim().equals(me)) {
-                                wallet.put(assetID, wallet.getOrDefault(assetID, 0) + transferAmount);
-                            }
-                            if (sale.getSeller().trim().equals(me)) {
-                                wallet.put(assetID, wallet.getOrDefault(assetID, 0) - transferAmount);
-                            }
-                        }
-
-                        // --- C. ESTADOS DE RENDA E VENDA ---
-                        if (txObj instanceof SaleProposal) {
-                            SaleProposal prop = (SaleProposal) txObj;
-                            // Se eu coloquei à venda e ainda não foi vendido...
-                            if (prop.getProposer().equals(me) && prop.getType().equals(SaleProposal.TYPE_SELL_OFFER)) {
-                                statusMap.put(prop.getPropertyID(), "À Venda (" + prop.getPrice() + "€)");
-                            }
-                        }
-                        
-                        // (Aqui podias manter a lógica de RentalTransaction também)
-
-                    } catch (Exception e) {}
+                        } catch (Exception e) {}
+                    }
                 }
             }
 
-            // 2. PREENCHER TABELA
-            for (java.util.Map.Entry<String, Integer> entry : wallet.entrySet()) {
+            // PASSO 2: Calcular Saldos
+            for (Object txObj : allTransactions) {
+                // A. Registo Inicial (Minting)
+                if (txObj instanceof RealEstateTransaction) {
+                    RealEstateTransaction tx = (RealEstateTransaction) txObj;
+                    String[] parts = tx.getAssetName().split(":");
+                    String realID = parts[0];
+                    typeMap.put(realID, parts.length > 1 ? parts[1] : "N/A");
+                    addressMap.put(realID, parts.length > 2 ? parts[2] : "N/A");
+                    
+                    if (tx.getTxtReceiver().trim().equals(me)) {
+                        wallet.put(realID, wallet.getOrDefault(realID, 0) + tx.getTokenAmount());
+                    }
+                    if (tx.getTxtSender().trim().equals(me) && !tx.getTxtSender().equals(tx.getTxtReceiver())) {
+                        wallet.put(realID, wallet.getOrDefault(realID, 0) - tx.getTokenAmount());
+                    }
+                }
+                
+                // B. Transferências (Venda/Compra de Tokens)
+                if (txObj instanceof SaleAcceptance) {
+                    SaleAcceptance sale = (SaleAcceptance) txObj;
+                    SaleProposal original = allProposals.get(sale.getProposalID());
+                    
+                    if (original != null) {
+                        String assetID = original.getPropertyID();
+                        int qtd = original.getTokenAmount(); // <--- USA A QUANTIDADE DA PROPOSTA
+                        
+                        // Se fui eu que comprei (Ganho tokens)
+                        if (sale.getBuyer().trim().equals(me)) {
+                            wallet.put(assetID, wallet.getOrDefault(assetID, 0) + qtd);
+                            // Tentar recuperar info do imóvel se não tiver
+                            // (Normalmente já temos se alguém registou, senão fica N/A)
+                        }
+                        
+                        // Se fui eu que vendi (Perco tokens)
+                        if (sale.getSeller().trim().equals(me)) {
+                            wallet.put(assetID, wallet.getOrDefault(assetID, 0) - qtd);
+                        }
+                    }
+                }
+            }
+
+            // PASSO 3: Preencher Tabela
+            for (Map.Entry<String, Integer> entry : wallet.entrySet()) {
                 if (entry.getValue() > 0) {
                     String id = entry.getKey();
                     model.addRow(new Object[]{
                         id,
-                        typeMap.getOrDefault(id, "N/A"),
-                        addressMap.getOrDefault(id, "N/A"),
-                        entry.getValue(),
-                        statusMap.getOrDefault(id, "Livre")
+                        typeMap.getOrDefault(id, "Desconhecido"),
+                        addressMap.getOrDefault(id, "Desconhecida"),
+                        entry.getValue(), // Agora mostra p.ex: 100, 500, ou 1000
+                        "Livre" // Simplificação do estado
                     });
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
    
    private void viewContractDetails(String assetID) {

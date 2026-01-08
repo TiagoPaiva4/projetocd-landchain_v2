@@ -173,6 +173,8 @@ public class CreateProposalGUI extends javax.swing.JFrame {
         cbTarget = new javax.swing.JComboBox<>();
         btConfirm = new javax.swing.JButton();
         btCancel = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtAmount = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -205,6 +207,10 @@ public class CreateProposalGUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setText("Quantidade de tokens");
+
+        txtAmount.setText("1000");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -218,26 +224,29 @@ public class CreateProposalGUI extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(52, 52, 52)
-                                .addComponent(jLabel2))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(63, 63, 63)
-                                .addComponent(jLabel3))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(52, 52, 52)
-                                .addComponent(jLabel4)))
-                        .addGap(26, 26, 26)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel3))))
+                        .addGap(62, 62, 62)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cbMyAssets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(cbTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbMyAssets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(89, 89, 89)
                         .addComponent(btConfirm)
                         .addGap(49, 49, 49)
                         .addComponent(btCancel)))
-                .addContainerGap(229, Short.MAX_VALUE))
+                .addContainerGap(228, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -252,15 +261,19 @@ public class CreateProposalGUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cbTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(72, 72, 72)
+                .addGap(38, 38, 38)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btConfirm)
                     .addComponent(btCancel))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -286,50 +299,44 @@ public class CreateProposalGUI extends javax.swing.JFrame {
     private void btConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConfirmActionPerformed
         // TODO add your handling code here:
         try {
-            // 1. Obter dados da GUI
-            String selectedAsset = (String) cbMyAssets.getSelectedItem();
-            if (selectedAsset == null || selectedAsset.equals("Sem imóveis disponíveis")) return;
+            String selectedAssetFull = (String) cbMyAssets.getSelectedItem();
+            if (selectedAssetFull == null) return;
             
-            // Extrair apenas o ID do imóvel (tudo antes do primeiro ":")
-            String assetID = selectedAsset.split(":")[0];
+            // Separar ID
+            String assetID = selectedAssetFull.split(":")[0];
 
-            String priceText = txtPrice.getText();
-            if (priceText.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Insira o preço!");
-                return;
-            }
-            double price = Double.parseDouble(priceText);
+            // 1. Ler valores
+            double price = Double.parseDouble(txtPrice.getText());
+            int amountToSell = Integer.parseInt(txtAmount.getText()); // Ler quantidade
 
-            // Obter destinatário
-            String targetSelection = (String) cbTarget.getSelectedItem();
-            String targetUser = "";
+            // 2. Validar se tenho tokens suficientes
+            // (Nota: Precisas de garantir que o loadMyWallet preencheu o mapa currentBalances ou ir buscar de novo)
+            // Para simplificar, vamos confiar no utilizador ou fazer uma verificação rápida se tiveres o saldo acessível
             
-            if (targetSelection != null && !targetSelection.startsWith("MERCADO")) {
-                targetUser = targetSelection; // É um utilizador específico
-            } else {
-                targetUser = "MERCADO"; // É público
+            if (amountToSell <= 0) {
+                 JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que 0.");
+                 return;
             }
 
-            // 2. Criar Proposta de VENDA
+            // 3. Criar Proposta
+            String target = (String) cbTarget.getSelectedItem();
+            if (target.startsWith("MERCADO")) target = "MERCADO";
+
             SaleProposal proposal = new SaleProposal(
                 myUser, 
                 assetID, 
-                targetUser, 
+                target, 
                 price, 
-                SaleProposal.TYPE_SELL_OFFER // Tipo fixo: VENDA
+                amountToSell, // Passar a quantidade
+                SaleProposal.TYPE_SELL_OFFER
             );
 
-            // 3. Enviar
             node.addTransaction(Utils.ObjectToBase64(proposal));
-            
-            JOptionPane.showMessageDialog(this, "Imóvel colocado à venda com sucesso!");
+            JOptionPane.showMessageDialog(this, "Oferta de " + amountToSell + " tokens criada!");
             this.dispose();
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Preço inválido (use ponto para decimais).");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
-            e.printStackTrace();
         }
     }//GEN-LAST:event_btConfirmActionPerformed
 
@@ -349,8 +356,10 @@ public class CreateProposalGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField txtAmount;
     private javax.swing.JTextField txtPrice;
     // End of variables declaration//GEN-END:variables
 }

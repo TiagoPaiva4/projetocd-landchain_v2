@@ -87,6 +87,7 @@ public class MarketplaceGUI extends javax.swing.JFrame {
                     displayedProposals.add(p);
                     model.addRow(new Object[]{
                         p.getPropertyID(),
+                        p.getTokenAmount(),
                         p.getType(),
                         p.getProposer(),
                         p.getTargetUser(),
@@ -119,13 +120,13 @@ public class MarketplaceGUI extends javax.swing.JFrame {
 
         tblMarket.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID Imóvel", "Tipo Proposta", "De", "Para", "Preço"
+                "ID Imóvel", "Qtd Tokens", "Tipo Proposta", "De", "Para", "Preço"
             }
         ));
         jScrollPane1.setViewportView(tblMarket);
@@ -136,8 +137,8 @@ public class MarketplaceGUI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

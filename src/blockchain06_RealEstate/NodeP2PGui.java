@@ -60,8 +60,8 @@ public class NodeP2PGui extends javax.swing.JFrame implements Nodelistener, Mine
         int y = r.nextInt(screenSize.height - this.getHeight());
         // Colocar a janela na posição aleatória
         setLocation(x, y);
-        txtServerListeningPort.setText("1000" + r.nextInt(10));
-        btStartServerActionPerformed(null);
+        txtServerListeningPort.setText("10004");
+        //btStartServerActionPerformed(null);
     }
 
     /**
