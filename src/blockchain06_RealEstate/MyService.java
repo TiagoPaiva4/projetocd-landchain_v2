@@ -60,7 +60,7 @@ public class MyService extends javax.swing.JFrame {
         btRegisterProp = new javax.swing.JButton();
         btViewMyAssets = new javax.swing.JButton();
         btTenantArea = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btMarket = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,8 +99,9 @@ public class MyService extends javax.swing.JFrame {
         btTenantArea.setText("Área de Inquilino");
         btTenantArea.addActionListener(this::btTenantAreaActionPerformed);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-transfer.png"))); // NOI18N
-        jButton1.setText("Transferência da Propriedade");
+        btMarket.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-transfer.png"))); // NOI18N
+        btMarket.setText("Mercado Imobiliário");
+        btMarket.addActionListener(this::btMarketActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,7 +119,7 @@ public class MyService extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblWelcome)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btMarket, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btTenantArea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btRegisterProp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btViewMyAssets, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -135,7 +136,7 @@ public class MyService extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btViewMyAssets)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btMarket, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btTenantArea)
                 .addGap(25, 25, 25)
@@ -196,6 +197,16 @@ public class MyService extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btViewMyAssetsActionPerformed
 
+    private void btMarketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMarketActionPerformed
+        // TODO add your handling code here:
+        if (node != null) {
+            // Abre a janela do Mercado passando a conexão e o utilizador atual
+            new MarketplaceGUI(node, myUser).setVisible(true);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: Sem conexão ao servidor.");
+        }
+    }//GEN-LAST:event_btMarketActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -222,10 +233,10 @@ public class MyService extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddTransaction;
+    private javax.swing.JButton btMarket;
     private javax.swing.JButton btRegisterProp;
     private javax.swing.JButton btTenantArea;
     private javax.swing.JButton btViewMyAssets;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JTextField txtNodeAddress;
     private javax.swing.JTextField txtTransaction;
