@@ -114,7 +114,6 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -130,6 +129,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         btRefresh = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -178,7 +178,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
 
         jPanel2.setPreferredSize(new java.awt.Dimension(526, 50));
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Fechar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -192,12 +192,21 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(243, Short.MAX_VALUE)
+                .addContainerGap(153, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(18, 18, 18)
                 .addComponent(btRefresh)
                 .addGap(49, 49, 49)
                 .addComponent(jButton1)
@@ -209,7 +218,8 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
                 .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(btRefresh))
+                    .addComponent(btRefresh)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -225,6 +235,24 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        // 1. Verificar se o utilizador selecionou uma linha na tabela
+        int row = tblProperties.getSelectedRow();
+        
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecione um imóvel na tabela.");
+            return;
+        }
+
+        // 2. Obter o ID do imóvel (Assumindo que o ID está na Coluna 0)
+        String selectedAssetID = (String) model.getValueAt(row, 0);
+
+        // 3. Abrir a janela de Renda
+        // Passamos o 'node', o 'user' logado e o ID da casa selecionada
+        new CreateRentalGUI(node, myUser, selectedAssetID).setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -258,6 +286,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btRefresh;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
