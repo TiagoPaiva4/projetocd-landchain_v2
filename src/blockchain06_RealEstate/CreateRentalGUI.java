@@ -4,6 +4,7 @@
  */
 package blockchain06_RealEstate;
 
+import java.io.File;
 /**
  *
  * @author Tiago Paiva
@@ -29,10 +30,41 @@ public class CreateRentalGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setTitle("Novo Contrato de Arrendamento");
         
+        loadUsers();
+        
         // Mostra na janela qual o ID do imóvel que estamos a alugar
         lblAssetID.setText(propertyID);
     }
-
+    
+    /**
+     * Carrega os utilizadores existentes na pasta data_user
+     */
+    private void loadUsers() {
+        cbTenant.removeAllItems(); // Limpar lista
+        
+        File folder = new File("data_user");
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    // Procuramos por chaves públicas (.pub) que representam os users
+                    if (f.getName().endsWith(".pub")) {
+                        String userName = f.getName().replace(".pub", "");
+                        
+                        // Não adicionar o meu próprio nome (eu sou o dono)
+                        if (!userName.equals(owner.getUserName())) {
+                            cbTenant.addItem(userName);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Se a lista estiver vazia, adicionar aviso
+        if (cbTenant.getItemCount() == 0) {
+            cbTenant.addItem("Nenhum inquilino encontrado");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,24 +77,27 @@ public class CreateRentalGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblAssetID = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        txtTenant = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtValue = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtMonths = new javax.swing.JTextField();
         btConfirm = new javax.swing.JButton();
         btCancel = new javax.swing.JButton();
+        cbTenant = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Inquilino (Nome):");
 
-        txtTenant.setText("jTextField1");
-
         jLabel2.setText("Valor Renda (€):");
 
-        txtValue.setText("jTextField1");
+        txtValue.setText("0");
+        txtValue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtValueActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Duração (Meses):");
 
@@ -82,6 +117,8 @@ public class CreateRentalGUI extends javax.swing.JFrame {
             }
         });
 
+        cbTenant.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -93,27 +130,27 @@ public class CreateRentalGUI extends javax.swing.JFrame {
                         .addComponent(lblAssetID))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(45, 45, 45)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtMonths))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtMonths, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtTenant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cbTenant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(115, 115, 115)
-                        .addComponent(btConfirm)))
+                        .addComponent(btConfirm))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(135, 135, 135)
+                        .addComponent(btCancel)))
                 .addContainerGap(341, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btCancel)
-                .addGap(158, 158, 158))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +160,7 @@ public class CreateRentalGUI extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtTenant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbTenant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -160,12 +197,18 @@ public class CreateRentalGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConfirmActionPerformed
-        // TODO add your handling code here:
         try {
-            // 1. Validar campos
-            String tenant = txtTenant.getText();
-            if (tenant.isEmpty() || txtValue.getText().isEmpty() || txtMonths.getText().isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Preencha todos os dados.");
+            // 1. Ler o inquilino da Dropdown
+            String tenant = (String) cbTenant.getSelectedItem();
+            
+            // Validações
+            if (tenant == null || tenant.equals("Nenhum inquilino encontrado")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Selecione um inquilino válido!");
+                return;
+            }
+            
+            if (txtValue.getText().isEmpty() || txtMonths.getText().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Preencha o valor e os meses.");
                 return;
             }
 
@@ -173,30 +216,24 @@ public class CreateRentalGUI extends javax.swing.JFrame {
             double rentValue = Double.parseDouble(txtValue.getText());
             int months = Integer.parseInt(txtMonths.getText());
 
-            // 3. Criar a Transação (Usando a tua classe RentalTransaction)
+            // ... O RESTO DO CÓDIGO CONTINUA IGUAL (Criação da transação e envio) ...
+            
             RentalTransaction rental = new RentalTransaction(
-                owner,      // Eu (Dono)
-                propertyID, // ID da Casa
-                tenant,     // Nome do Inquilino
-                rentValue,  // Valor
-                months      // Duração
+                owner,      
+                propertyID, 
+                tenant,     // Agora usamos a variável da dropdown
+                rentValue,  
+                months      
             );
 
-            // 4. Enviar para a Blockchain
             if (node != null) {
-                // Converte para Base64 e envia
                 node.addTransaction(utils.Utils.ObjectToBase64(rental));
-                
-                javax.swing.JOptionPane.showMessageDialog(this, "Contrato de arrendamento enviado para a Blockchain!");
-                this.dispose(); // Fecha a janela
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Erro: Sem conexão ao servidor.");
+                javax.swing.JOptionPane.showMessageDialog(this, "Contrato enviado para a Blockchain!");
+                this.dispose();
             }
-
-        } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "O valor e os meses devem ser números.");
+            
         } catch (Exception ex) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao criar contrato: " + ex.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
             ex.printStackTrace();
         }
     }//GEN-LAST:event_btConfirmActionPerformed
@@ -206,11 +243,16 @@ public class CreateRentalGUI extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btCancelActionPerformed
 
+    private void txtValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValueActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValueActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCancel;
     private javax.swing.JButton btConfirm;
+    private javax.swing.JComboBox<String> cbTenant;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -218,7 +260,6 @@ public class CreateRentalGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAssetID;
     private javax.swing.JTextField txtMonths;
-    private javax.swing.JTextField txtTenant;
     private javax.swing.JTextField txtValue;
     // End of variables declaration//GEN-END:variables
 }

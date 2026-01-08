@@ -36,45 +36,68 @@ public class TenantContractsGUI extends javax.swing.JFrame {
     }
 
     private void loadContracts() {
+        // 1. Limpar a tabela
         model.setRowCount(0);
+        
         if (node == null) return;
 
         try {
+            // 2. Preparar listas
+            java.util.List<RentalTransaction> myOffers = new java.util.ArrayList<>();
+            java.util.Set<String> acceptedContractIDs = new java.util.HashSet<>();
+            String myName = myUser.getUserName().trim(); // Trim para evitar erros de espaços
+
+            // 3. Obter a Blockchain
             BlockChain bc = node.getBlockchain();
-            
-            // Listas temporárias
-            List<RentalTransaction> myOffers = new ArrayList<>();
-            Set<String> acceptedContractIDs = new HashSet<>();
+            java.util.List<Block> blocks = bc.getBlocks(); // CORREÇÃO: getBlocks()
 
-            // 1. Varrer a Blockchain
-            for (Block b : bc.getChain()) {
-                for (Object txObj : b.getData()) {
+            // 4. Varrer a Blockchain
+            for (Block b : blocks) {
+                java.util.List transactions = b.getTransactions(); // CORREÇÃO: getTransactions()
+                
+                if (transactions == null) continue;
+
+                for (Object rawObj : transactions) {
                     try {
-                        Object decoded = (txObj instanceof String) ? Utils.StringToObject((String)txObj) : txObj;
+                        Object decoded = rawObj;
 
-                        // Se for uma OFERTA dirigida a mim
+                        // Descodificar Base64 manualmente (para garantir que funciona sem utils externos)
+                        if (rawObj instanceof String) {
+                            byte[] data = java.util.Base64.getDecoder().decode((String) rawObj);
+                            try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
+                                decoded = ois.readObject();
+                            }
+                        }
+
+                        // --- VERIFICAR SE É UMA PROPOSTA PARA MIM ---
                         if (decoded instanceof RentalTransaction) {
                             RentalTransaction tx = (RentalTransaction) decoded;
-                            if (tx.getTenantName().equals(myUser.getUserName())) {
+                            // Se o nome do inquilino for igual ao meu
+                            if (tx.getTenantName().trim().equals(myName)) {
                                 myOffers.add(tx);
                             }
                         }
                         
-                        // Se for uma ACEITAÇÃO minha
-                        if (decoded instanceof RentalAcceptanceTransaction) {
+                        // --- VERIFICAR SE EU JÁ ACEITEI ---
+                        else if (decoded instanceof RentalAcceptanceTransaction) {
                             RentalAcceptanceTransaction tx = (RentalAcceptanceTransaction) decoded;
-                            if (tx.getTenantName().equals(myUser.getUserName())) {
+                            // Se fui eu que aceitei
+                            if (tx.getTenantName().trim().equals(myName)) {
                                 acceptedContractIDs.add(tx.getContractID());
                             }
                         }
                         
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        // Ignorar transações que não sejam legíveis ou de outros tipos
+                    }
                 }
             }
 
-            // 2. Preencher a tabela cruzando os dados
+            // 5. Preencher a tabela cruzando os dados
             for (RentalTransaction offer : myOffers) {
                 String status = "PENDENTE";
+                
+                // Se o ID deste contrato estiver na lista de aceites
                 if (acceptedContractIDs.contains(offer.getContractID())) {
                     status = "ATIVO (Assinado)";
                 }
@@ -82,12 +105,13 @@ public class TenantContractsGUI extends javax.swing.JFrame {
                 model.addRow(new Object[]{
                     offer.getContractID(),
                     offer.getPropertyID(),
-                    offer.getRentValue(),
+                    offer.getRentValue() + " €",
                     status
                 });
             }
 
         } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao carregar contratos: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -151,7 +175,7 @@ public class TenantContractsGUI extends javax.swing.JFrame {
                 .addComponent(btRefresh)
                 .addGap(83, 83, 83)
                 .addComponent(btSignContract)
-                .addContainerGap(254, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +195,7 @@ public class TenantContractsGUI extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 690, Short.MAX_VALUE)
+            .addGap(0, 532, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,37 +253,7 @@ public class TenantContractsGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TenantContractsGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TenantContractsGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TenantContractsGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TenantContractsGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TenantContractsGUI().setVisible(true);
-            }
-        });
-    }
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btRefresh;
