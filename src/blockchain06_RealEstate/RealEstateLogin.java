@@ -67,12 +67,13 @@ public class RealEstateLogin extends javax.swing.JFrame {
         txtNodeAdress.setBorder(javax.swing.BorderFactory.createTitledBorder("Node Adress"));
 
         txtLoginUser.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        txtLoginUser.setText("manso");
+        txtLoginUser.setText("user");
         txtLoginUser.setBorder(javax.swing.BorderFactory.createTitledBorder("Username"));
 
         txtLoginPass.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        txtLoginPass.setText("123qwe");
+        txtLoginPass.setText("1234");
         txtLoginPass.setBorder(javax.swing.BorderFactory.createTitledBorder("Password"));
+        txtLoginPass.addActionListener(this::txtLoginPassActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -96,7 +97,7 @@ public class RealEstateLogin extends javax.swing.JFrame {
         );
 
         btLogin.setFont(new java.awt.Font("Corbel Light", 1, 18)); // NOI18N
-        btLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/templarCoin_2.png"))); // NOI18N
+        btLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/logo-rwa.png"))); // NOI18N
         btLogin.setText("Login");
         btLogin.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btLogin.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -281,6 +282,10 @@ public class RealEstateLogin extends javax.swing.JFrame {
     private void jPanel3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPanel3FocusGained
         displayUsers();
     }//GEN-LAST:event_jPanel3FocusGained
+
+    private void txtLoginPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLoginPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLoginPassActionPerformed
 
     /**
      * @param args the command line arguments
