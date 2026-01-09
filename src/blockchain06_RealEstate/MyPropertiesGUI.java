@@ -211,6 +211,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         btRefresh = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        btHistory = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -285,18 +286,27 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
             }
         });
 
+        btHistory.setText("Ver Histórico");
+        btHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHistoryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(99, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addContainerGap(78, Short.MAX_VALUE)
+                .addComponent(btHistory)
                 .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btRefresh)
-                .addGap(49, 49, 49)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addGap(85, 85, 85))
+                .addGap(33, 33, 33))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,7 +315,8 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(btRefresh)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(btHistory))
                 .addContainerGap())
         );
 
@@ -356,6 +367,105 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblPropertiesMouseClicked
 
+    private void btHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHistoryActionPerformed
+
+        int row = tblProperties.getSelectedRow();
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma propriedade na tabela!");
+            return;
+        }
+
+        String selectedID = (String) model.getValueAt(row, 0); 
+        
+        StringBuilder history = new StringBuilder();
+        history.append("HISTÓRICO DO IMÓVEL: ").append(selectedID).append("\n");
+        history.append("-------------------------------------------------\n\n");
+
+        try {
+            BlockChain bc = node.getBlockchain();
+            
+            for (Block b : bc.getBlocks()) {
+                java.util.List transactions = b.getTransactions();
+                if (transactions == null) continue;
+
+                for (Object raw : transactions) {
+                    try {
+                        Object tx = raw;
+                        // Descodificar Base64 se necessário
+                        if (raw instanceof String) {
+                            byte[] data = java.util.Base64.getDecoder().decode((String) raw);
+                            try (java.io.ObjectInputStream ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(data))) {
+                                tx = ois.readObject();
+                            }
+                        }
+
+                        // --- A. REGISTO ---
+                        if (tx instanceof RealEstateTransaction) {
+                            RealEstateTransaction rtx = (RealEstateTransaction) tx;
+                            if (rtx.getAssetName().startsWith(selectedID)) {
+                                history.append("[REGISTO] Criado por ").append(rtx.getTxtSender().trim())
+                                       .append("\n          Info: ").append(rtx.getAssetName())
+                                       .append("\n\n");
+                            }
+                        }
+
+                        // --- B. VENDAS (MERCADO) ---
+                        if (tx instanceof SaleProposal) {
+                            SaleProposal prop = (SaleProposal) tx;
+                            if (prop.getPropertyID().equals(selectedID)) {
+                                history.append("[MERCADO] ").append(prop.getType())
+                                       .append(" por ").append(prop.getProposer())
+                                       .append("\n          Preço: ").append(prop.getPrice()).append("€")
+                                       .append("\n\n");
+                            }
+                        }
+                        
+                        if (tx instanceof SaleAcceptance) {
+                            SaleAcceptance sale = (SaleAcceptance) tx;
+                            if (sale.getPropertyID().equals(selectedID)) {
+                                history.append(">>> VENDA CONCLUÍDA <<<\n")
+                                       .append("          De: ").append(sale.getSeller())
+                                       .append(" -> Para: ").append(sale.getBuyer())
+                                       .append("\n\n");
+                            }
+                        }
+
+                        // --- C. ALUGUERES (CORRIGIDO AQUI) ---
+                        if (tx instanceof RentalTransaction) {
+                            RentalTransaction rent = (RentalTransaction) tx;
+                            
+                            // Verifica se o aluguer é sobre este imóvel
+                            if (rent.getPropertyID().equals(selectedID)) {
+                                history.append("[ALUGUER] Proposta de Contrato\n")
+                                       .append("          Senhorio: ").append(rent.getOwnerName())  // Nome correto
+                                       .append("\n          Inquilino: ").append(rent.getTenantName()) // Nome correto
+                                       .append("\n          Valor: ").append(rent.getRentValue()).append("€") // Nome correto
+                                       .append(" (" + rent.getDurationMonths() + " meses)")
+                                       .append("\n\n");
+                            }
+                        }
+                        
+                        // (Opcional) Se tiveres RentalAcceptanceTransaction, adiciona aqui um bloco similar
+                        
+                    } catch (Exception e) {}
+                }
+            }
+            
+            // Mostrar Popup
+            javax.swing.JTextArea textArea = new javax.swing.JTextArea(history.toString());
+            textArea.setEditable(false);
+            textArea.setRows(15);
+            textArea.setColumns(50);
+            
+            javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(textArea);
+            javax.swing.JOptionPane.showMessageDialog(this, scroll, "Histórico Completo", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    }//GEN-LAST:event_btHistoryActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -386,6 +496,7 @@ public class MyPropertiesGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHistory;
     private javax.swing.JButton btRefresh;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

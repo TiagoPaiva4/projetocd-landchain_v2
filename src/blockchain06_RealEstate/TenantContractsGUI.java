@@ -128,11 +128,10 @@ public class TenantContractsGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblContracts = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        btRefresh = new javax.swing.JButton();
-        btSignContract = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         btClose = new javax.swing.JButton();
+        btSignContract = new javax.swing.JButton();
+        btRefresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -153,10 +152,12 @@ public class TenantContractsGUI extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        btRefresh.setText("Atualizar");
-        btRefresh.addActionListener(new java.awt.event.ActionListener() {
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        btClose.setText("Fechar");
+        btClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btRefreshActionPerformed(evt);
+                btCloseActionPerformed(evt);
             }
         });
 
@@ -167,35 +168,10 @@ public class TenantContractsGUI extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(159, 159, 159)
-                .addComponent(btRefresh)
-                .addGap(83, 83, 83)
-                .addComponent(btSignContract)
-                .addContainerGap(96, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btRefresh)
-                    .addComponent(btSignContract))
-                .addGap(36, 36, 36))
-        );
-
-        jPanel1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
-
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-
-        btClose.setText("Fechar");
-        btClose.addActionListener(new java.awt.event.ActionListener() {
+        btRefresh.setText("Atualizar");
+        btRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCloseActionPerformed(evt);
+                btRefreshActionPerformed(evt);
             }
         });
 
@@ -204,16 +180,23 @@ public class TenantContractsGUI extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(89, 89, 89)
+                .addGap(19, 19, 19)
                 .addComponent(btClose)
-                .addContainerGap(371, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btRefresh)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
+                .addComponent(btSignContract)
+                .addGap(72, 72, 72))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(btClose)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btClose)
+                    .addComponent(btRefresh)
+                    .addComponent(btSignContract))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -280,7 +263,6 @@ public class TenantContractsGUI extends javax.swing.JFrame {
     private javax.swing.JButton btSignContract;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblContracts;
     // End of variables declaration//GEN-END:variables

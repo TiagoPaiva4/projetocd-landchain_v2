@@ -36,6 +36,7 @@ public class RealEstateProperty implements Serializable {
         return "RWA-" + propertyID; 
     }
 
+    
     @Override
     public String toString() {
         return "ID: " + getUniqueBlockchainID() + " | " + type + " em " + address;
