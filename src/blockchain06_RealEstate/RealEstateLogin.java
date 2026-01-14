@@ -149,7 +149,7 @@ public class RealEstateLogin extends javax.swing.JFrame {
         jPanel6.add(txtRegisterPass2);
 
         brRegister.setFont(new java.awt.Font("Corbel Light", 1, 18)); // NOI18N
-        brRegister.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/templarCoin_2.png"))); // NOI18N
+        brRegister.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/logo-rwa.png"))); // NOI18N
         brRegister.setText("Register");
         brRegister.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         brRegister.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
