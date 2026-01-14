@@ -36,7 +36,7 @@ import utils.RMI;
 public class NodeP2PGui extends javax.swing.JFrame implements Nodelistener, MinerListener {
 
     RemoteNodeObject myremoteObject;
-    
+
     /**
      * Creates new form MessengerGUI
      */
@@ -44,8 +44,6 @@ public class NodeP2PGui extends javax.swing.JFrame implements Nodelistener, Mine
         initComponents();
         txtServerListeningObjectName.setText(RemoteNodeObject.REMOTE_OBJECT_NAME);
         setRandomPosition();
-        
-        // Atualiza o título da janela para sabermos quem está logado
 
     }
 
@@ -60,8 +58,8 @@ public class NodeP2PGui extends javax.swing.JFrame implements Nodelistener, Mine
         int y = r.nextInt(screenSize.height - this.getHeight());
         // Colocar a janela na posição aleatória
         setLocation(x, y);
-        txtServerListeningPort.setText("10004");
-        //btStartServerActionPerformed(null);
+        txtServerListeningPort.setText("1000" + r.nextInt(10));
+        btStartServerActionPerformed(null);
     }
 
     /**
