@@ -65,6 +65,7 @@ public class MyService extends javax.swing.JFrame {
         btTenantArea = new javax.swing.JButton();
         btMarket = new javax.swing.JButton();
         lblLogo = new javax.swing.JLabel();
+        btFiltrar = new javax.swing.JButton();
 
         jLabel1.setText("jLabel1");
 
@@ -111,35 +112,41 @@ public class MyService extends javax.swing.JFrame {
 
         lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/logo-rwa.png"))); // NOI18N
 
+        btFiltrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/ic-search.png"))); // NOI18N
+        btFiltrar.setText("Filter Transactions");
+        btFiltrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btFiltrar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        btFiltrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btFiltrar.addActionListener(this::btFiltrarActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(txtNodeAddress)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblLogo)
+                .addGap(140, 140, 140))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(btAddTransaction)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btFiltrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btAddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTransaction))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblLogo)
-                        .addGap(134, 134, 134))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(90, 90, 90)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btViewMyAssets)
-                                    .addComponent(btRegisterProp, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btMarket, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btTenantArea, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 103, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(btViewMyAssets)
+                            .addComponent(btRegisterProp, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btMarket, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btTenantArea, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,9 +165,10 @@ public class MyService extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btAddTransaction, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtTransaction, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btAddTransaction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtTransaction)
+                    .addComponent(btFiltrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -223,6 +231,15 @@ public class MyService extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btMarketActionPerformed
 
+    private void btFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFiltrarActionPerformed
+        // TODO add your handling code here:
+        // Cria a nova janela passando o 'node' atual
+    FilterGUI janelaFiltro = new FilterGUI(this.node);
+    
+    // Torna a janela visível
+    janelaFiltro.setVisible(true);
+    }//GEN-LAST:event_btFiltrarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -249,6 +266,7 @@ public class MyService extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddTransaction;
+    private javax.swing.JButton btFiltrar;
     private javax.swing.JButton btMarket;
     private javax.swing.JButton btRegisterProp;
     private javax.swing.JButton btTenantArea;
